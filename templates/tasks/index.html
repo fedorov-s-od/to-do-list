@@ -2,22 +2,29 @@
 
 {% block content %}
     <h1>TODO list
-        <a href="{% url 'tasks:task-create' %}" class="btn btn-primary link-to-page">Create</a>
+        <a href="{% url 'tasks:task-create' %}" class="btn btn-primary link-to-page">Add task</a>
     </h1>
 
-    {% for task in tasks_list %}
+    {% for task in task_list %}
         <div>
-            <h2>
-                {{ task.content }}
-                {% if task.is_done %}
-                    <p class="red-text">Undone</p>
-                    <a class="btn btn-success" href="{% url 'tasks:task-change-status' task.id %}">Complete</a>
-                {% else %}
-                    <p class="green-text">Done</p>
-                    <a class="btn btn-secondary" href="{% url 'tasks:task-change-status' task.id %}">Undo</a>
-                {% endif %}
+            <div class="d-flex justify-content-between">
+                <h2>
+                    {{ task.content }}
+                    {% if not task.is_done %}
+                        <span class="text-danger">Undone</span>
+                    {% else %}
+                        <span class="text-success">Done</span>
+                    {% endif %}
+                </h2>
+                <p>
+                    {% if task.is_done %}
+                        <a class="btn btn-success" href="{% url 'tasks:task-change-status' task.id %}">Complete</a>
+                    {% else %}
+                        <a class="btn btn-secondary" href="{% url 'tasks:task-change-status' task.id %}">Undo</a>
+                    {% endif %}
 
-            </h2>
+                </p>
+            </div>
             <p>Created: {{ task.created_at }}</p>
             <p class="text-muted">
                 Tags: {{ task.tags.all }}

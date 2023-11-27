@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 
 from .models import Task, Tag
+from .forms import TaskForm
 
 
 @login_required
@@ -18,7 +19,7 @@ def index(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-        "post_list": page_obj
+        "task_list": page_obj
     }
 
     return render(request, "tasks/index.html", context=context)
@@ -31,21 +32,38 @@ class TagListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 5
 
 
+class TagCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Tag
+    fields = "__all__"
+    success_url = reverse_lazy("tasks:tag-list")
+
+
+class TagUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Tag
+    fields = "__all__"
+    success_url = reverse_lazy("tasks:tag-list")
+
+
+class TagDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Tag
+    success_url = reverse_lazy("tasks:tag-list")
+
+
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     model = Task
-    fields = "__all__"
-    success_url = reverse_lazy("tasks:task-list")
+    form_class = TaskForm
+    success_url = reverse_lazy("tasks:index")
 
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Task
-    fields = "__all__"
-    success_url = reverse_lazy("tasks:task-list")
+    form_class = TaskForm
+    success_url = reverse_lazy("tasks:index")
 
 
 class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Task
-    success_url = reverse_lazy("tasks:task-list")
+    success_url = reverse_lazy("tasks:index")
 
 
 @login_required
@@ -56,5 +74,4 @@ def task_change_status(request, pk):
     else:
         task.is_done = True
     task.save()
-
-    return HttpResponseRedirect(reverse_lazy("tasks:task-list"))
+    return HttpResponseRedirect(reverse_lazy("tasks:index"))
