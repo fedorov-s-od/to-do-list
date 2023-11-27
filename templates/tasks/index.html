@@ -1,6 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Welcome to Todo List</h1>
+    <h1>TODO list
+        <a href="{% url 'tasks:task-create' %}" class="btn btn-primary link-to-page">Create</a>
+    </h1>
+
+    {% for task in tasks_list %}
+        <div>
+            <h2>
+                {{ task.content }}
+                {% if task.is_done %}
+                    <p class="red-text">Undone</p>
+                    <a class="btn btn-success" href="{% url 'tasks:task-change-status' task.id %}">Complete</a>
+                {% else %}
+                    <p class="green-text">Done</p>
+                    <a class="btn btn-secondary" href="{% url 'tasks:task-change-status' task.id %}">Undo</a>
+                {% endif %}
+
+            </h2>
+            <p>Created: {{ task.created_at }}</p>
+            <p class="text-muted">
+                Tags: {{ task.tags.all }}
+                <a href="{% url 'tasks:task-update' task.id %}">Update</a>
+                <a href="{% url 'tasks:task-delete' task.id %}">Delete</a>
+            </p>
+        </div>
+        <hr>
+
+    {% empty %}
+        <p>No posts available.</p>
+    {% endfor %}
+
+
 
 {% endblock %}
