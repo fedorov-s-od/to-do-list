@@ -1,30 +1,20 @@
-from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 
 from .models import Task, Tag
 from .forms import TaskForm
 
 
-@login_required
-def index(request):
-    """View function for the home page of the site."""
-    post_list = Task.objects.all().order_by('-created_at')
-    paginator = Paginator(post_list, 5)  # Paginate by 5 items per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    task_list = Task.objects.all().order_by('-created_at', 'is_done')
-    paginator = Paginator(task_list, 5)  # Paginate by 5 items per page
+class TaskListView(LoginRequiredMixin, generic.ListView):
+    template_name = "tasks/index.html"
+    context_object_name = "task_list"
+    paginate_by = 5
 
-    context = {
-        "task_list": page_obj
-    }
-
-    return render(request, "tasks/index.html", context=context)
+    def get_queryset(self):
+        return Task.objects.all().order_by('is_done', '-created_at').prefetch_related('tags')
 
 
 class TagListView(LoginRequiredMixin, generic.ListView):

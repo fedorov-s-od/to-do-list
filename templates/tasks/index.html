@@ -4,6 +4,7 @@
     <h1>TODO list
         <a href="{% url 'tasks:task-create' %}" class="btn btn-primary link-to-page">Add task</a>
     </h1>
+    <hr>
 
     {% for task in task_list %}
         <div>
@@ -25,7 +26,7 @@
 
                 </p>
             </div>
-            <p>Created: {{ task.created_at }}</p>
+            <p>Created: {{ task.created_at }} {% if task.deadline %} <span style="color: #964B00">Deadline: {{ task.deadline }} </span>{% endif %}</p>
             <p class="text-muted">
                 Tags: {{ task.tags_to_str }}
                 <a href="{% url 'tasks:task-update' task.id %}">Update</a>
