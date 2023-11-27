@@ -17,6 +17,8 @@ def index(request):
     paginator = Paginator(post_list, 5)  # Paginate by 5 items per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    task_list = Task.objects.all().order_by('-created_at', 'is_done')
+    paginator = Paginator(task_list, 5)  # Paginate by 5 items per page
 
     context = {
         "task_list": page_obj

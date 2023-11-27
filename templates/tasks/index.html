@@ -27,7 +27,7 @@
             </div>
             <p>Created: {{ task.created_at }}</p>
             <p class="text-muted">
-                Tags: {{ task.tags.all }}
+                Tags: {{ task.tags_to_str }}
                 <a href="{% url 'tasks:task-update' task.id %}">Update</a>
                 <a href="{% url 'tasks:task-delete' task.id %}">Delete</a>
             </p>
